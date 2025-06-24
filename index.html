@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 9 Math Tutor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .progress-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .score-item {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .score-item h3 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .week-selector {
+            margin-bottom: 25px;
+        }
+
+        .week-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .week-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .week-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .week-btn.active {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .homework-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .question {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .answer-input.correct {
+            border-color: #27ae60;
+            background-color: #d5f4e6;
+        }
+
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border-left: 4px solid #27ae60;
+        }
+
+        .feedback.incorrect {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .complete-day-btn {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .complete-day-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .celebration h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .score-display {
+                flex-direction: column;
+            }
+            
+            .week-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Year 9 Math Tutor</h1>
+            <p>Master Number & Algebra - Term 1</p>
+        </div>
+
+        <div class="progress-card">
+            <div class="score-display">
+                <div class="score-item">
+                    <h3 id="todayScore">0</h3>
+                    <p>Today's Score</p>
+                </div>
+                <div class="score-item">
+                    <h3 id="totalScore">0</h3>
+                    <p>Total Points</p>
+                </div>
+                <div class="score-item">
+                    <h3 id="streak">0</h3>
+                    <p>Day Streak</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-card">
+            <div class="week-selector">
+                <h2>📅 Select Week to Practice</h2>
+                <div class="week-buttons">
+                    <button class="week-btn active" onclick="selectWeek(1)">Week 1<br>Place Value</button>
+                    <button class="week-btn" onclick="selectWeek(2)">Week 2<br>Integers</button>
+                    <button class="week-btn" onclick="selectWeek(3)">Week 3<br>Fractions</button>
+                    <button class="week-btn" onclick="selectWeek(4)">Week 4<br>Conversions</button>
+                    <button class="week-btn" onclick="selectWeek(5)">Week 5-6<br>Ratios</button>
+                    <button class="week-btn" onclick="selectWeek(7)">Week 7-8<br>Algebra</button>
+                    <button class="week-btn" onclick="selectWeek(9)">Week 9-10<br>Equations</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="homework-section">
+            <h2 id="weekTitle">📝 Week 1: Place Value & Order of Operations</h2>
+            <div id="questionsContainer">
+                <!-- Questions will be loaded here -->
+            </div>
+            <button class="complete-day-btn" id="completeDayBtn" onclick="completeDay()" style="display: none;">
+                🎉 Complete Today's Practice
+            </button>
+        </div>
+
+        <div id="celebration" class="celebration" style="display: none;">
+            <h2>🎉 Awesome Work!</h2>
+            <p>You've completed today's math practice!</p>
+            <p>Come back tomorrow for more challenges!</p>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        let currentWeek = 1;
+        let currentQuestions = [];
+        let answers = {};
+        let todayScore = 0;
+        let totalScore = parseInt(localStorage.getItem('totalScore') || '0');
+        let streak = parseInt(localStorage.getItem('streak') || '0');
+
+        // Question bank for each week
+        const questionBank = {
+            1: [
+                {
+                    question: "Write 47,362 in words:",
+                    answer: "forty-seven thousand three hundred and sixty-two",
+                    type: "text",
+                    hint: "Break it down: 47,000 + 300 + 60 + 2"
+                },
+                {
+                    question: "Round 3,847 to the nearest hundred:",
+                    answer: "3800",
+                    type: "number",
+                    hint: "Look at the tens digit (4). Is it 5 or more?"
+                },
+                {
+                    question: "Calculate: 3 + 4 × 2 - 1 =",
+                    answer: "10",
+                    type: "number",
+                    hint: "Remember BODMAS: Multiplication first, then addition and subtraction from left to right"
+                },
+                {
+                    question: "Calculate: (15 - 3) ÷ 4 + 2 =",
+                    answer: "5",
+                    type: "number",
+                    hint: "Brackets first: (15-3) = 12, then 12÷4 = 3, finally 3+2 = 5"
+                }
+            ],
+            2: [
+                {
+                    question: "Calculate: (-8) + 15 =",
+                    answer: "7",
+                    type: "number",
+                    hint: "Think of it as 15 - 8"
+                },
+                {
+                    question: "Calculate: (-4) × (-6) =",
+                    answer: "24",
+                    type: "number",
+                    hint: "Negative × Negative = Positive"
+                },
+                {
+                    question: "Calculate: 2³ =",
+                    answer: "8",
+                    type: "number",
+                    hint: "2³ means 2 × 2 × 2"
+                },
+                {
+                    question: "Calculate: 3.47 + 2.8 =",
+                    answer: "6.27",
+                    type: "number",
+                    hint: "Line up the decimal points when adding"
+                }
+            ],
+            3: [
+                {
+                    question: "Simplify: 12/16 =",
+                    answer: "3/4",
+                    type: "fraction",
+                    hint: "Find the highest common factor of 12 and 16"
+                },
+                {
+                    question: "Calculate: 2/3 + 1/6 =",
+                    answer: "5/6",
+                    type: "fraction",
+                    hint: "Convert to common denominator: 4/6 + 1/6"
+                },
+                {
+                    question: "What is 25% as a fraction in simplest form?",
+                    answer: "1/4",
+                    type: "fraction",
+                    hint: "25% = 25/100, then simplify"
+                },
+                {
+                    question: "Calculate: 3/4 × 2/5 =",
+                    answer: "6/20",
+                    type: "fraction",
+                    hint: "Multiply numerators together, then denominators together"
+                }
+            ],
+            4: [
+                {
+                    question: "Convert 0.75 to a percentage:",
+                    answer: "75%",
+                    type: "text",
+                    hint: "Multiply by 100 and add the % symbol"
+                },
+                {
+                    question: "Convert 3/5 to a decimal:",
+                    answer: "0.6",
+                    type: "number",
+                    hint: "Divide 3 by 5"
+                },
+                {
+                    question: "A shirt costs $60. With a 20% discount, what is the sale price?",
+                    answer: "48",
+                    type: "number",
+                    hint: "20% of $60 = $12, so sale price = $60 - $12"
+                },
+                {
+                    question: "If 15% of a number is 30, what is the number?",
+                    answer: "200",
+                    type: "number",
+                    hint: "If 15% = 30, then 1% = 2, so 100% = 200"
+                }
+            ],
+            5: [
+                {
+                    question: "Simplify the ratio 12:18:",
+                    answer: "2:3",
+                    type: "text",
+                    hint: "Divide both numbers by their highest common factor (6)"
+                },
+                {
+                    question: "If 3 pens cost $4.50, how much do 7 pens cost?",
+                    answer: "10.50",
+                    type: "number",
+                    hint: "First find the cost of 1 pen, then multiply by 7"
+                },
+                {
+                    question: "In a recipe, flour:sugar = 4:1. If you use 200g flour, how much sugar?",
+                    answer: "50",
+                    type: "number",
+                    hint: "If flour:sugar = 4:1, then sugar = flour ÷ 4"
+                },
+                {
+                    question: "5 workers can complete a job in 8 days. How many days for 10 workers?",
+                    answer: "4",
+                    type: "number",
+                    hint: "This is inverse proportion: more workers = less time"
+                }
+            ],
+            7: [
+                {
+                    question: "Simplify: 3x + 5x =",
+                    answer: "8x",
+                    type: "text",
+                    hint: "Add the coefficients: 3 + 5 = 8"
+                },
+                {
+                    question: "Simplify: 4a - 2a + 3b =",
+                    answer: "2a + 3b",
+                    type: "text",
+                    hint: "Combine like terms: 4a - 2a = 2a"
+                },
+                {
+                    question: "If x = 3, what is 2x + 7?",
+                    answer: "13",
+                    type: "number",
+                    hint: "Substitute x = 3: 2(3) + 7 = 6 + 7"
+                },
+                {
+                    question: "If a = 4 and b = 2, what is 3a - 2b?",
+                    answer: "8",
+                    type: "number",
+                    hint: "Substitute: 3(4) - 2(2) = 12 - 4"
+                }
+            ],
+            9: [
+                {
+                    question: "Solve: x + 7 = 12",
+                    answer: "5",
+                    type: "number",
+                    hint: "Subtract 7 from both sides"
+                },
+                {
+                    question: "Solve: 3x = 21",
+                    answer: "7",
+                    type: "number",
+                    hint: "Divide both sides by 3"
+                },
+                {
+                    question: "Solve: 2x + 5 = 17",
+                    answer: "6",
+                    type: "number",
+                    hint: "First subtract 5, then divide by 2"
+                },
+                {
+                    question: "Expand: 3(x + 4) =",
+                    answer: "3x + 12",
+                    type: "text",
+                    hint: "Multiply 3 by each term inside the brackets"
+                }
+            ]
+        };
+
+        // Initialize app
+        function init() {
+            updateScoreDisplay();
+            loadWeekQuestions(1);
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('todayScore').textContent = todayScore;
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('streak').textContent = streak;
+        }
+
+        function selectWeek(week) {
+            currentWeek = week;
+            // Update active button
+            document.querySelectorAll('.week-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.week-btn')[week - 1].classList.add('active');
+            loadWeekQuestions(week);
+        }
+
+        function loadWeekQuestions(week) {
+            const weekTitles = {
+                1: "📝 Week 1: Place Value & Order of Operations",
+                2: "📝 Week 2: Integers & Indices",
+                3: "📝 Week 3: Fractions & Percentages",
+                4: "📝 Week 4: Converting & Applications",
+                5: "📝 Week 5-6: Ratios & Proportion",
+                7: "📝 Week 7-8: Algebraic Expressions",
+                9: "📝 Week 9-10: Linear Equations"
+            };
+
+            document.getElementById('weekTitle').textContent = weekTitles[week];
+            
+            currentQuestions = questionBank[week] || [];
+            answers = {};
+            
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            currentQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <h3>Question ${index + 1}</h3>
+                    <div class="question-text">${q.question}</div>
+                    <input type="text" class="answer-input" id="answer${index}" 
+                           placeholder="Enter your answer..." 
+                           onkeyup="checkAnswer(${index}, this.value)">
+                    <button class="submit-btn" onclick="submitAnswer(${index})">Check Answer</button>
+                    <div class="feedback" id="feedback${index}" style="display: none;"></div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            document.getElementById('completeDayBtn').style.display = 'none';
+            document.getElementById('celebration').style.display = 'none';
+        }
+
+        function checkAnswer(questionIndex, userAnswer) {
+            const input = document.getElementById(`answer${questionIndex}`);
+            const question = currentQuestions[questionIndex];
+            
+            if (!userAnswer.trim()) {
+                input.className = 'answer-input';
+                return;
+            }
+
+            const correct = isCorrectAnswer(userAnswer, question.answer);
+            input.className = correct ? 'answer-input correct' : 'answer-input incorrect';
+        }
+
+        function isCorrectAnswer(userAnswer, correctAnswer) {
+            // Normalize answers for comparison
+            const normalize = (str) => str.toString().toLowerCase().replace(/\s+/g, '').replace(/[%$]/g, '').replace(/and/g, '').replace(/-/g, '');
+            return normalize(userAnswer) === normalize(correctAnswer);
+        }
+
+        function submitAnswer(questionIndex) {
+            const input = document.getElementById(`answer${questionIndex}`);
+            const feedback = document.getElementById(`feedback${questionIndex}`);
+            const question = currentQuestions[questionIndex];
+            const userAnswer = input.value.trim();
+
+            if (!userAnswer) {
+                alert('Please enter an answer first!');
+                return;
+            }
+
+            const correct = isCorrectAnswer(userAnswer, question.answer);
+            answers[questionIndex] = { correct, userAnswer };
+
+            if (correct) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✅ Correct! Well done!';
+                todayScore += 10;
+                input.disabled = true;
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = `❌ Not quite. The correct answer is: ${question.answer}. ${question.hint}`;
+                todayScore += 2; // Partial credit for attempting
+            }
+
+            feedback.style.display = 'block';
+            updateScoreDisplay();
+
+            // Check if all questions answered
+            if (Object.keys(answers).length === currentQuestions.length) {
+                document.getElementById('completeDayBtn').style.display = 'block';
+            }
+        }
+
+        function completeDay() {
+            totalScore += todayScore;
+            streak += 1;
+            
+            // Save to localStorage
+            localStorage.setItem('totalScore', totalScore.toString());
+            localStorage.setItem('streak', streak.toString());
+            
+            updateScoreDisplay();
+            document.getElementById('celebration').style.display = 'block';
+            document.getElementById('completeDayBtn').style.display = 'none';
+            
+            // Scroll to celebration
+            document.getElementById('celebration').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
